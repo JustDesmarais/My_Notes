@@ -18,12 +18,52 @@ module.exports = () => {
       path: path.resolve(__dirname, 'dist'),
     },
     plugins: [
-      
+      new HtmlWebpackPlugin({
+        template: './index.html',
+        title: 'JATE App'
+      }),
+    new InjectManifest({
+      swSrc: './src-sw.js',
+      swDest: 'service-worker.js',
+    }), 
+    new WebpackPwaManifest({
+      // Create a manifest.json:
+      name: 'My Text Editor PWA',
+      short_name: 'JATE',
+      description: 'A text editor to keep tabs on my tasks',
+      background_color: '#ffffff',
+      icons: [
+        {
+          src: path.resolve('src/images/logo.png'),
+          sizes: [96, 128, 192, 256, 384, 512], // multiple sizes
+          destination: path.join('assets', 'icons'),
+        },
+      ],
+      orientation: "portrait",
+      display: "standalone",
+      start_url: "./",
+      publicPath: './',
+    }),
     ],
 
     module: {
+      // CSS Loaders
       rules: [
-        
+        {
+          test: /\.css$/i,
+          use: ['style-loader', 'css-loader'],
+        },
+        {
+          test: /\.m?js$/,
+          exclude: /(node_modules|bower_components)/,
+          use: {
+            loader: 'babel-loader',
+            options: {
+              presets: ['@babel/preset-env'],
+              plugins: ['@babel/plugin-proposal-object-rest-spread', '@babel/transform-runtime'],
+            }
+          }
+        },
       ],
     },
   };

@@ -17,6 +17,9 @@ module.exports = () => {
       filename: '[name].bundle.js',
       path: path.resolve(__dirname, 'dist'),
     },
+    devServer: {
+      hot:"only"
+    },
     plugins: [
       new HtmlWebpackPlugin({
         template: './index.html',
@@ -32,6 +35,7 @@ module.exports = () => {
       short_name: 'JATE',
       description: 'A text editor to keep tabs on my tasks',
       background_color: '#ffffff',
+      fingerprints: false,
       icons: [
         {
           src: path.resolve('src/images/logo.png'),

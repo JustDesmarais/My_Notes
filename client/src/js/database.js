@@ -16,27 +16,40 @@ const initdb = async () =>
 export const putDb = async (content) => {
   console.log('Post to DB')
 
-  const textItem = await openDB('jate', 1);
-  const tx = textItem.transaction('jate', 'readwrite');
-  const store = tx.objectStore('jate');
-  const request = store.add({notes: content});
+  const textDb = await openDB('jate', 1);
 
+  // Create a new transaction and specify the database and data privileges.
+  const tx = textDb.transaction('jate', 'readwrite');
+
+  // Open up the desired object store.
+  const store = tx.objectStore('jate');
+
+  // Use the .add() method on the store and pass in the content.
+  const request = store.add({ text: content });
+
+  console.log(result);
+
+  // Get confirmation of the request.
   const result = await request;
-  console.log('data saved to indexDB', result);
+  console.log('Data saved to the database', result);
 }
 
-// TODO: Add logic for a method that gets all the content from the database
+// gets all the content from the database
 export const getDb = async () => {
   console.log('Get from DB');
 
-  const textItem = await openDB('jate', 1);
-  const tx = textItem.transaction('jate', 'readonly');
+  const textDb = await openDB('jate', 1);
+
+  const tx = textDb.transaction('jate', 'readonly');
+
   const store = tx.objectStore('jate');
+
   const request = store.getAll();
 
   const result = await request;
-  console.log('data retrieved from DB');
+  console.log('result.value', result);
   return result;
+
 }
 
 initdb();

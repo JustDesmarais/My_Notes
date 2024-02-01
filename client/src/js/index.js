@@ -17,7 +17,6 @@ const loadSpinner = () => {
   main.appendChild(spinner);
 };
 
-
 const editor = new Editor();
 
 if (typeof editor === 'undefined') {
@@ -38,4 +37,9 @@ if ('serviceWorker' in navigator) {
   console.error('Service workers are not supported in this browser.');
 }
 
-
+/**    if ('serviceWorker' in navigator) {
+       // Use the window load event to keep the page load performant
+       window.addEventListener('load', () => {
+           navigator.serviceWorker.register('/service-worker.js');
+       });
+   } */

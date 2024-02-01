@@ -1,4 +1,5 @@
 import { openDB } from 'idb';
+import { header } from './header';
 
 const initdb = async () =>
   openDB('jate', 1, {
@@ -25,7 +26,7 @@ export const putDb = async (content) => {
   const store = tx.objectStore('jate');
 
   // Use the .add() method on the store and pass in the content.
-  const request = store.add({ text: content });
+  const request = store.put({ id: 1, text: content });
 
   console.log(result);
 
@@ -44,11 +45,15 @@ export const getDb = async () => {
 
   const store = tx.objectStore('jate');
 
-  const request = store.getAll();
+  const request = store.get(1);
 
   const result = await request;
+
+  if (!result) {
+    return header
+  }
   console.log('result.value', result);
-  return result;
+  return result.text;
 
 }
 

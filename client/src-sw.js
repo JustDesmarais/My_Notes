@@ -1,5 +1,5 @@
 //offlineFallback,
-const { warmStrategyCache } = require('workbox-recipes');
+const { offlineFallback, warmStrategyCache } = require('workbox-recipes');
 const { StaleWhileRevalidate, CacheFirst } = require('workbox-strategies');
 const { registerRoute } = require('workbox-routing');
 const { CacheableResponsePlugin } = require('workbox-cacheable-response');
@@ -20,12 +20,25 @@ const pageCache = new CacheFirst({
   ],
 });
 
+const imageCache = new CacheFirst({
+  cacheName: 'image-cache', 
+  plugins: [
+    new CacheableResponsePlugin({
+      statuses: [0, 100]
+    })
+  ]
+})
+
 warmStrategyCache({
   urls: ['/index.html', '/'],
   strategy: pageCache,
 });
 
 registerRoute(({ request }) => request.mode === 'navigate', pageCache);
+
+registerRoute(({ request }) => request.destination === 'image', imageCache);
+
+
 
 // TODO: Implement asset caching
 registerRoute(
@@ -39,5 +52,18 @@ registerRoute(
         statuses: [0, 200],
       }),
     ],
-  })
+  }),
+);
+
+registerRoute(
+  ({ request }) => request.destination === 'document',
+  async ({ event }) => {
+    try {
+      // Try to respond with the cached page
+      return await pageCache.handle({ event });
+    } catch (error) {
+      // If the page is not cached, respond with the offline page
+      return await offlineFallback()(event);
+    }
+  }
 );

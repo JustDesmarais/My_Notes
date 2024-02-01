@@ -11,7 +11,9 @@ module.exports = () => {
     mode: 'development',
     entry: {
       main: './src/js/index.js',
-      install: './src/js/install.js'
+      install: './src/js/install.js',
+      editor: './src/js/editor.js',
+      header: './src/js/header.js',
     },
     output: {
       filename: '[name].bundle.js',
@@ -28,6 +30,7 @@ module.exports = () => {
     new InjectManifest({
       swSrc: './src-sw.js',
       swDest: 'service-worker.js',
+      include: [/\.html$/, /\.js$/, /\.css$/, /\.png$/, /\.jpg$/, /\.svg$/],
     }), 
     new WebpackPwaManifest({
       // Create a manifest.json:
@@ -36,6 +39,7 @@ module.exports = () => {
       description: 'A text editor to keep tabs on my tasks',
       background_color: '#ffffff',
       fingerprints: false,
+      inject: true,
       icons: [
         {
           src: path.resolve('src/images/logo.png'),
